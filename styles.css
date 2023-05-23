@@ -1,0 +1,304 @@
+* {
+    padding: 0;
+    margin: 0;
+    outline: 0;
+    font-family: 'Manrope', sans-serif;
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+}
+
+body {
+    background-color: hsl(240, 5%, 96%);
+}
+
+:root {
+    --primary-color: #731E7D;
+    --primary-color-hover: #631A6B;
+    --primary-color-active: #CA35DB;
+    --primary-color-bg: #D5BBD8;
+    --danger-color: #D93562;
+    --danger-color-hover: #9C2646;
+    --danger-color-active: #F23B6D;
+    --secondary-color-hover: #EACDED;
+    --secondary-color-active: #FBDDFF;
+    --text-color: white;
+    --color-lvl-2: white;
+    --label-color: var(--primary-color);
+    --secondary-label-color: #7e7e7e;
+    --progress-task: #ffcccb;
+    --done-task: #83f28f;
+    --input-size: 36px;
+    --box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+}
+
+.menu {
+    display: flex;
+    justify-content: space-between;
+    padding: 24px;
+    background-color: var(--color-lvl-2);
+    box-shadow: 0 4px 6px 1px rgba(34, 60, 80, 0.2);
+}
+
+.menu-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.link-button {
+    display: flex;
+    text-underline: var(--primary-color);
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.menu-button {
+    background-color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    color: var(--text-color);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    max-height: var(--input-size);
+    min-height: var(--input-size);
+    display: block;
+}
+.menu-button:hover {
+    background-color: var(--primary-color-hover);
+    border: 1px solid var(--primary-color-hover);
+}
+.menu-button:active {
+    background-color: var(--primary-color-active);
+    border: 1px solid var(--primary-color-active);
+}
+
+.secondary-button {
+    display: block;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    background-color: var(--color-lvl-2);
+}
+.secondary-button:hover {
+    background-color: var(--secondary-color-hover);
+    border: 1px solid var(--secondary-color-hover);
+}
+.secondary-button:active {
+    background-color: var(--secondary-color-active);
+    border: 1px solid var(--secondary-color-active);
+}
+
+.menu-button--danger {
+    background-color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+}
+.menu-button--danger:hover {
+    background-color: var(--danger-color-hover);
+    border: 1px solid var(--danger-color-hover);
+}
+.menu-button--danger:active {
+    background-color: var(--danger-color-active);
+    border: 1px solid var(--danger-color-active);
+}
+
+.user-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+}
+
+.user-panel__user {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    width: var(--input-size);
+    height: var(--input-size);
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.wrapper {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.auth-wrapper {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.auth-form {
+    width: 300px;
+    padding: 24px;
+    margin-top: 30vh;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    border-radius: 8px;
+    background-color: var(--color-lvl-2);
+    box-shadow: var(--box-shadow);
+}
+
+.auth-form__header {
+    align-self: center;
+}
+
+.auth-form__error {
+    margin-bottom: 12px;
+    background: red;
+    color: var(--text-color);
+    display: none;
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.auth-form__error--alert {
+    display: block;
+}
+
+.auth-form__item {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+}
+
+.auth-form__label {
+    color: var(--label-color);
+}
+.auth-form__input {
+    height: var(--input-size);
+    font-size: 20px;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    padding: 0 8px;
+}
+
+.auth-form__input:focus {
+    outline: 2px solid var(--primary-color);
+}
+
+.auth-form__control {
+    margin-top: 12px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.page-header {
+    align-self: center;
+}
+
+
+.tasks {
+    width: 100%;
+    padding: 40px 0 40px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+
+}
+
+.tasks__add {
+    margin-top: 24px;
+    width: 100%;
+    height: 60px;
+    display: grid;
+    grid-template-columns: 2fr 6fr 2fr 2fr;
+    gap: 12px;
+}
+
+.tasks__item {
+    width: 320px;
+    height: 320px;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: var(--box-shadow);
+    background-color: var(--color-lvl-2);
+}
+
+.tasks__item--header {
+    background-color: gray;
+    color: var(--text-color);
+    font-weight: bold;
+}
+
+.tasks__item-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.tasks__item-info--status-wrapper {
+    position: relative;
+}
+.tasks__item-status {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+}
+.tasks__item-status--done {
+    background-color: var(--done-task);
+}
+.tasks__item-status--undone {
+    background-color: var(--progress-task);
+}
+
+.tasks__item-cell {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    overflow-wrap: anywhere;
+    gap: 8px;
+}
+
+.tasks__item-cell--column {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.tasks__item-cell--right {
+    justify-content: flex-end;
+}
+.tasks__item-cell--center {
+    justify-content: center;
+}
+
+.tasks__item-label {
+    color: var(--secondary-label-color);
+    font-size: 14px;
+    line-height: 14px;
+    font-weight: 100;
+}
+
+.tasks__item-control {
+
+}
+.tasks__item-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
