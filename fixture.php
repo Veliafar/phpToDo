@@ -12,17 +12,21 @@ $pdo->exec('CREATE TABLE users (
 )');
 
 $user = new User('admin');
-$user->setName('Geekbrains PHP');
+$user->setName('admin');
 
 $userProvider = new UserProvider($pdo);
 $userProvider->registerUser($user, '123');
 
 
 $pdo->exec('CREATE TABLE tasks (
-  id INTEGER NOT NULL PRIMARY KEY,
-  description VARCHAR(500) NOT NULL,
-  isDone INTEGER NOT NULL,
-  dateCreate VARCHAR(100),
-  dateUpdate VARCHAR(100),
-  userID INTEGER NOT NULL
+                       "id" INTEGER NOT NULL PRIMARY KEY,
+                       "title" VARCHAR(500) NOT NULL,
+                       "description" VARCHAR(500) NOT NULL,
+                       "status" VARCHAR(55) NULL,
+                       "dateCreate" VARCHAR(100) NOT NULL,
+                       "dateTarget" VARCHAR(100) NOT NULL,
+                       "dateUpdate" VARCHAR(100) NOT NULL,
+                       "ownerID" INTEGER NOT NULL,
+                       "assigneeID" INTEGER NOT NULL,
+                       "attachedFile" BLOB
 )');

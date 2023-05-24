@@ -46,4 +46,28 @@ class UserProvider
     $userFromDB = $statement->fetchObject();
     return new User($userFromDB->username, $userFromDB->id, $userFromDB->name,) ?: null;
   }
+
+  public function getUserByID(int $id): ?User
+  {
+    $statement = $this->pdo->prepare(
+      'SELECT * FROM users WHERE id = :id LIMIT 1'
+    );
+
+    $statement->execute([
+      'id' => $id,
+    ]);
+    $userFromDB = $statement->fetchObject();
+    return new User($userFromDB->username, $userFromDB->id, $userFromDB->name) ?: null;
+  }
+
+  public function getUsersList(): bool | array
+  {
+    $statement = $this->pdo->prepare(
+      'SELECT * FROM users'
+    );
+
+    $statement->execute();
+    $usersFromDB = $statement->fetchAll(PDO::FETCH_OBJ);
+    return $usersFromDB;
+  }
 }

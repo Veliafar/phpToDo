@@ -1,5 +1,7 @@
 <?php
 require_once "Task.php";
+require_once "User.php";
+require_once 'model/UserProvider.php';
 
 class TaskProvider
 {
@@ -8,29 +10,38 @@ class TaskProvider
 
   private int $userID;
 
-  public function __construct(PDO $pdo, int $userID)
+  private UserProvider $userProvider;
+
+  public function __construct(PDO $pdo, int $userID, UserProvider $userProvider)
   {
     $this->pdo = $pdo;
     $this->userID = $userID;
+    $this->userProvider = $userProvider;
 
     $statement = $this->pdo->prepare(
-      'SELECT * FROM tasks WHERE userID = :userID'
+      'SELECT * FROM tasks WHERE ownerID = :ownerID'
     );
 
     $statement->execute([
-      'userID' => $userID,
+      'ownerID' => $userID,
     ]);
 
     $tasksFromDB = $statement->fetchAll(PDO::FETCH_OBJ);
+
     foreach ($tasksFromDB as $taskDB) {
 
+      $assignee = $this->userProvider->getUserByID($taskDB->assigneeID);
+
       $taskFromBack = new Task(
+        $taskDB->ownerID,
+        $assignee,
+        $taskDB->title,
         $taskDB->description,
-        $taskDB->userID,
+        $taskDB->dateTarget,
+        $taskDB->status,
         $taskDB->id,
-        $taskDB->isDone,
-        $taskDB->dateCreate,
         $taskDB->dateUpdate,
+        $taskDB->dateCreate,
       );
 
       $this->tasks[] = $taskFromBack;
@@ -45,28 +56,45 @@ class TaskProvider
     return $this->tasks;
   }
 
-  public function addTask(string $description, int $userID): void
+  public function addTask(
+    int    $ownerID,
+    int    $assigneeID,
+    string $title,
+    string $description,
+    string $dateTarget,
+    string $status,
+  ): void
   {
+
+    $assignee = $this->userProvider->getUserByID($assigneeID);
+    var_dump($assignee);
     $newTask = new Task(
+      $ownerID,
+      $assignee,
+      $title,
       $description,
-      $userID,
+      $dateTarget,
+      $status,
       $this->pdo->lastInsertId(),
     );
 
     $statement = $this->pdo->prepare(
       'INSERT INTO tasks (
-                    description, isDone, dateCreate, dateUpdate, userID
+                    ownerID, assigneeID, title, description, dateTarget, status, dateUpdate, dateCreate
                    ) VALUES (
-                              :description, :isDone, :dateCreate, :dateUpdate, :userID
+                              :ownerID, :assigneeID, :title, :description, :dateTarget, :status, :dateUpdate, :dateCreate
                              )'
     );
 
     $statement->execute([
-      'description' => $newTask->description,
-      'isDone' => (int)$newTask->getIsDone(),
-      'dateCreate' => $newTask->getDateCreate(),
+      'ownerID' => $newTask->getOwnerID(),
+      'assigneeID' => $newTask->getAssignee()->getID(),
+      'title' => $newTask->getTitle(),
+      'description' => $newTask->getDescription(),
+      'dateTarget' => $newTask->getDateTarget(),
+      'status' => $newTask->getStatus(),
       'dateUpdate' => $newTask->getDateUpdate(),
-      'userID' => $newTask->getUserID(),
+      'dateCreate' => $newTask->getDateCreate(),
     ]);
 
     $this->tasks[] = $newTask;
@@ -76,46 +104,45 @@ class TaskProvider
   {
 
     $statement = $this->pdo->prepare(
-      'DELETE FROM tasks WHERE id = :id AND userID = :userID'
+      'DELETE FROM tasks WHERE id = :id AND ownerID = :ownerID'
     );
     $statement->execute([
       'id' => $taskID,
-      'userID' => $this->userID
+      'ownerID' => $this->userID
     ]);
 
     $deleteKey = null;
-    foreach($this->tasks as $key=>$value) {
+    foreach ($this->tasks as $key => $value) {
       if ($value->getUserID() === $this->userID && $value->getID() === $taskID) {
         $deleteKey = $key;
       }
     }
     unset($this->tasks[$deleteKey]);
-
     return $taskID;
   }
 
-  public function changeTaskDone(int $taskKey, int $isDone): int
-  {
-    $taskID = $this->tasks[$taskKey]->getID();
-    $userID = $this->tasks[$taskKey]->getUserID();
-
-    $statement = $this->pdo->prepare(
-      'UPDATE tasks SET isDone=:isDone WHERE id = :id AND userID = :userID'
-    );
-    $statement->execute([
-      'isDone' => $isDone,
-      'id' => $taskID,
-      'userID' => $userID
-    ]);
-    $makeDoneKey = null;
-    foreach($this->tasks as $key=>$value) {
-      if ($value->getUserID() === $userID && $value->getID() === $taskID) {
-        $makeDoneKey = $key;
-      }
-    }
-    $this->tasks[$makeDoneKey]->changeTaskReady($isDone);
-
-    return $taskID;
-  }
+//  public function changeTaskDone(int $taskKey, int $isDone): int
+//  {
+//    $taskID = $this->tasks[$taskKey]->getID();
+//    $userID = $this->tasks[$taskKey]->getUserID();
+//
+//    $statement = $this->pdo->prepare(
+//      'UPDATE tasks SET isDone=:isDone WHERE id = :id AND userID = :userID'
+//    );
+//    $statement->execute([
+//      'isDone' => $isDone,
+//      'id' => $taskID,
+//      'userID' => $userID
+//    ]);
+//    $makeDoneKey = null;
+//    foreach ($this->tasks as $key => $value) {
+//      if ($value->getUserID() === $userID && $value->getID() === $taskID) {
+//        $makeDoneKey = $key;
+//      }
+//    }
+//    $this->tasks[$makeDoneKey]->changeTaskReady($isDone);
+//
+//    return $taskID;
+//  }
 
 }

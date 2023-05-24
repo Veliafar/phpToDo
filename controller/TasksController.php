@@ -2,6 +2,8 @@
 require_once "model/User.php";
 require_once "model/Task.php";
 require_once "model/TaskProvider.php";
+require_once "model/UserProvider.php";
+
 session_start();
 
 //echo "<pre>";
@@ -19,21 +21,17 @@ include_once "controller/LoginController.php";
 $tasks = [];
 
 $userID = $_SESSION['user']->getID();
-$taskProvider = new TaskProvider($pdo, $userID);
+$userProvider = new UserProvider($pdo);
+$taskProvider = new TaskProvider($pdo, $userID, $userProvider);
 
-if (isset($_POST['description'])) {
-  $taskProvider->addTask($_POST['description'], $userID);
-  strtok($_SERVER["REQUEST_URI"], '?');
-  header("Location: /?controller=tasks");
-  die();
-}
 
-if (isset($_GET['changeTaskDone'])) {
-  $taskProvider->changeTaskDone($_GET['changeTaskDone'], $_GET['isDone']);
-  strtok($_SERVER["REQUEST_URI"], '?');
-  header("Location: /?controller=tasks");
-  die();
-}
+
+//if (isset($_GET['changeTaskDone'])) {
+//  $taskProvider->changeTaskDone($_GET['changeTaskDone'], $_GET['isDone']);
+//  strtok($_SERVER["REQUEST_URI"], '?');
+//  header("Location: /?controller=tasks");
+//  die();
+//}
 
 if (isset($_GET['delTask'])) {
 

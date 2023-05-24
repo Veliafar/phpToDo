@@ -9,6 +9,7 @@ try {
   include_once $routes[$controller] ?? die('404');
 } catch (PDOException $exception) {
   echo "Проблемы с БД";
+  echo $exception;
 } catch (Throwable $exception) {
   $globalError = $exception->getMessage();
 }
