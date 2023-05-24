@@ -140,6 +140,7 @@
                   Изменить
               </button>
           <?php endif; ?>
+            <a class="menu-button menu-button--secondary" href="/?controller=tasks">Отмена</a>
         </div>
     </form>
 

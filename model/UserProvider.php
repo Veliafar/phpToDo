@@ -26,7 +26,7 @@ class UserProvider
       [
         'name' => $user->getName(),
         'username' => $user->getUserName(),
-        'password' => $plainPassword
+        'password' => md5($plainPassword)
       ]
     );
 
@@ -44,7 +44,7 @@ class UserProvider
       'password' => md5($password)
     ]);
     $userFromDB = $statement->fetchObject();
-    return new User($userFromDB->username, $userFromDB->id, $userFromDB->name,) ?: null;
+    return $userFromDB ? new User($userFromDB->username, $userFromDB->id, $userFromDB->name,) : null;
   }
 
   public function getUserByID(int $id): ?User

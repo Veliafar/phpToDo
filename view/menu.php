@@ -14,7 +14,7 @@
                 <?=$userName[0]?>
             </div>
 
-            <a class="menu-button menu-button--danger" href="/?controller=security&action=logout">Выход</a>
+            <a class="menu-button menu-button--secondary" href="/?controller=security&action=logout">Выход</a>
         <?php else: ?>
             <a class="menu-button"  href="/?controller=security">Войти</a>
         <?php endif; ?>

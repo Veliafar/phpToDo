@@ -103,14 +103,20 @@
 
               </div>
               <div class="tasks__item-control">
-                  <div class="tasks__item-cell tasks__item-cell--column">
-                      <label class="tasks__item-label">
-                          дата обновления
-                      </label>
-                      <div class="tasks__item__info">
-                        <?= $task->getDateUpdate() ?>
+
+                  <div class="tasks__item__line">
+                    <div></div>
+                      <div class="tasks__item-cell tasks__item-cell--column">
+                          <label class="tasks__item-label">
+                              дата обновления
+                          </label>
+                          <div class="tasks__item__info">
+                            <?= $task->getDateUpdate() ?>
+                          </div>
                       </div>
                   </div>
+
+
 
                   <div class="tasks__item-buttons">
 <!--                    --><?php //if (!$task->getIsDone()): ?>
@@ -134,7 +140,7 @@
                     <?php if ($task->getOwnerID() === $userID): ?>
                         <a
                                 title="Редактировать задачу"
-                                class="menu-button"
+                                class="menu-button menu-button--secondary"
                                 href="/?controller=taskEdit&id=<?= $task->getID() ?>"
                         >
                             &#128393;
@@ -144,7 +150,7 @@
                     <?php if ($task->getOwnerID() === $userID): ?>
                         <a
                                 title="Удалить задачу"
-                                class="menu-button menu-button--danger"
+                                class="menu-button menu-button--secondary"
                                 onclick="delTask(<?= $task->getID() ?>)"
                         >
                             &#10006;
