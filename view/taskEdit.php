@@ -15,13 +15,13 @@
 </head>
 <body>
 
-<script>
-    const delTask = async (taskID) => {
-        const response = await fetch(`/?controller=tasks&delTask=${taskID}`);
-        const answer = await response.json();
-        document.getElementById(answer.id).remove();
-    }
-</script>
+<!--<script>-->
+<!--    const delTask = async (taskID) => {-->
+<!--        const response = await fetch(`/?controller=tasks&delTask=${taskID}`);-->
+<!--        const answer = await response.json();-->
+<!--        document.getElementById(answer.id).remove();-->
+<!--    }-->
+<!--</script>-->
 
 <?php include "menu.php" ?>
 
@@ -41,18 +41,21 @@
                     id="title"
                     name="title"
                     type="text"
+                    value="<?= $titleValue ?>"
             >
         </div>
-        <div class="task-create__line task-create__line--textarea">
+        <div class="task-create__line">
             <label class="form-label" for="description">
                 описание
             </label>
-            <textarea
+            <input
+                    style="word-break: break-word;"
                     class="base-input"
                     id="description"
                     name="description"
+                    type="text"
+                    value="<?= $descriptionValue ?>"
             >
-            </textarea>
         </div>
         <div class="task-create__line">
             <label class="form-label" for="dateTarget">
@@ -63,6 +66,7 @@
                     id="dateTarget"
                     name="dateTarget"
                     type="date"
+                    value="<?= $dateTargetValue ?>"
             >
         </div>
         <div class="task-create__line">
@@ -73,9 +77,13 @@
                     class="base-input"
                     id="assigneeID"
                     name="assigneeID"
+                    value="<?= $assigneeIDValue ?>"
+
             >
               <?php foreach ($users as $key => $assignee): ?>
-                  <option value="<?= $assignee->id ?>">
+                  <option
+                          value="<?= $assignee->id ?>"
+                          <?= $assignee->id === $assigneeIDValue ? 'selected' : '' ?>>
                     <?= $assignee->name ?>
                   </option>
               <?php endforeach; ?>
@@ -89,22 +97,47 @@
                     class="base-input"
                     id="status"
                     name="status"
+                    value="<?= $statusValue?>"
             >
-                <option value="NEW">Новая</option>
-                <option value="IN_PROGRESS">В работе</option>
-                <option value="REVIEW">Ревью</option>
-                <option value="TEST">Тестирование</option>
-                <option value="RELEASE">Релиз</option>
+                <option value="NEW"
+                  <?= "NEW" === $statusValue ? 'selected' : '' ?> >
+                    Новая
+                </option>
+                <option value="IN_PROGRESS"
+                  <?= "IN_PROGRESS" === $statusValue ? 'selected' : '' ?> >
+                    В работе
+                </option>
+                <option value="REVIEW"
+                  <?= "REVIEW" === $statusValue ? 'selected' : '' ?> >
+                    Ревью
+                </option>
+                <option value="TEST"
+                  <?= "TEST" === $statusValue ? 'selected' : '' ?> >
+                    Тестирование
+                </option>
+                <option value="RELEASE"
+                  <?= "RELEASE" === $statusValue ? 'selected' : '' ?> >
+                    Релиз
+                </option>
             </select>
         </div>
 
-        <input type="hidden" value="true" name="createTask">
+      <?php if (!$isEdit): ?>
+          <input type="hidden" value="true" name="createTask">
+      <?php else: ?>
+          <input type="hidden" value="true" name="editTask">
+      <?php endif; ?>
 
         <div class="task-create__control">
-            <button class="menu-button" type="submit">
-                Создать
-            </button>
-
+          <?php if (!$isEdit): ?>
+              <button class="menu-button" type="submit">
+                  Создать
+              </button>
+          <?php else: ?>
+              <button class="menu-button" type="submit">
+                  Изменить
+              </button>
+          <?php endif; ?>
         </div>
     </form>
 

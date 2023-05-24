@@ -28,8 +28,8 @@ class Task
     string $dateTarget,
     string $status = 'NEW',
     int    $id = 0,
-    string $dateUpdate = '',
     string $dateCreate = '',
+    string $dateUpdate = '',
   )
   {
     $this->ownerID = $ownerID;
@@ -79,6 +79,10 @@ class Task
   {
     return $this->dateTarget->format('d.m.Y');
   }
+  public function getDateTargetForHTMLValue(): string
+  {
+    return $this->dateTarget->format('Y-m-d');
+  }
 
   public function getStatus(): string
   {
@@ -89,18 +93,14 @@ class Task
   {
     return $this->dateCreate->format('d.m.Y H:i');
   }
+  public function getDateCreateForDB(): string
+  {
+    return $this->dateTarget->format('d.m.Y H:m');
+  }
 
   public function getDateUpdate(): string
   {
     return $this->dateUpdate->format('d.m.Y H:m');
   }
-
-
-
-  //  public function changeTaskReady(int $isDone): void
-//  {
-//    $this->dateUpdate = new DateTime();
-//    $this->isDone = boolval($isDone);
-//  }
 
 }

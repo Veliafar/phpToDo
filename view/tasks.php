@@ -113,23 +113,33 @@
                   </div>
 
                   <div class="tasks__item-buttons">
-                      <!--                                          --><?php //if (!$task->getIsDone()): ?>
-                      <!--                                              <a-->
-                      <!--                                                      title="Выполнить задачу"-->
-                      <!--                                                      class="menu-button"-->
-                      <!--                                                      href="/?controller=tasks&changeTaskDone=-->
-                      <!--                    --><?php //= $key ?><!--&isDone=1">-->
-                      <!--                                                  ✔-->
-                      <!--                                              </a>-->
-                      <!--                                          --><?php //else: ?>
-                      <!--                                              <a-->
-                      <!--                                                      title="Продолжить задачу"-->
-                      <!--                                                      class="menu-button menu-button--danger"-->
-                      <!--                                                      href="/?controller=tasks&changeTaskDone=-->
-                      <!--                    --><?php //= $key ?><!--&isDone=0">-->
-                      <!--                                                  &#8634;-->
-                      <!--                                              </a>-->
-                      <!--                                          --><?php //endif; ?>
+<!--                    --><?php //if (!$task->getIsDone()): ?>
+<!--                        <a-->
+<!--                                title="Выполнить задачу"-->
+<!--                                class="menu-button"-->
+<!--                                href="/?controller=tasks&changeTaskDone=-->
+<!--                                          --><?php //= $key ?><!--&isDone=1">-->
+<!--                            ✔-->
+<!--                        </a>-->
+<!--                    --><?php //else: ?>
+<!--                        <a-->
+<!--                                title="Продолжить задачу"-->
+<!--                                class="menu-button menu-button--danger"-->
+<!--                                href="/?controller=tasks&changeTaskDone=-->
+<!--                                          --><?php //= $key ?><!--&isDone=0">-->
+<!--                            &#8634;-->
+<!--                        </a>-->
+<!--                    --><?php //endif; ?>
+
+                    <?php if ($task->getOwnerID() === $userID): ?>
+                        <a
+                                title="Редактировать задачу"
+                                class="menu-button"
+                                href="/?controller=taskEdit&id=<?= $task->getID() ?>"
+                        >
+                            &#128393;
+                        </a>
+                    <?php endif; ?>
 
                     <?php if ($task->getOwnerID() === $userID): ?>
                         <a

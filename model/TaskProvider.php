@@ -40,8 +40,8 @@ class TaskProvider
         $taskDB->dateTarget,
         $taskDB->status,
         $taskDB->id,
-        $taskDB->dateUpdate,
         $taskDB->dateCreate,
+        $taskDB->dateUpdate,
       );
 
       $this->tasks[] = $taskFromBack;
@@ -67,7 +67,6 @@ class TaskProvider
   {
 
     $assignee = $this->userProvider->getUserByID($assigneeID);
-    var_dump($assignee);
     $newTask = new Task(
       $ownerID,
       $assignee,
@@ -98,6 +97,75 @@ class TaskProvider
     ]);
 
     $this->tasks[] = $newTask;
+  }
+
+
+  public function editTask(
+    int    $id,
+    int    $ownerID,
+    int    $assigneeID,
+    string $title,
+    string $description,
+    string $dateTarget,
+    string $status,
+    string $dateCreate,
+  ): void
+  {
+
+    $assignee = $this->userProvider->getUserByID($assigneeID);
+
+    $newTask = new Task(
+      $ownerID,
+      $assignee,
+      $title,
+      $description,
+      $dateTarget,
+      $status,
+      $id,
+      $dateCreate
+    );
+
+    $statement = $this->pdo->prepare(
+      'UPDATE tasks SET ownerID = :ownerID, assigneeID = :assigneeID, title = :title, description = :description, dateTarget = :dateTarget, status = :status, dateUpdate = :dateUpdate, dateCreate = :dateCreate WHERE id = :id'
+    )->execute([
+      'id' => $id,
+      'ownerID' => $newTask->getOwnerID(),
+      'assigneeID' => $newTask->getAssignee()->getID(),
+      'title' => $newTask->getTitle(),
+      'description' => $newTask->getDescription(),
+      'dateTarget' => $newTask->getDateTargetForHTMLValue(),
+      'status' => $newTask->getStatus(),
+      'dateUpdate' => $newTask->getDateUpdate(),
+      'dateCreate' => $newTask->getDateCreateForDB(),
+    ]);
+  }
+
+  public function getTaskByID(
+    int $taskID,
+  ): ?Task
+  {
+    $statement = $this->pdo->prepare(
+      'SELECT * FROM tasks WHERE id = :id LIMIT 1'
+    );
+    $statement->execute([
+      'id' => $taskID,
+    ]);
+    $taskDB = $statement->fetchObject();
+    $assignee = $this->userProvider->getUserByID($taskDB->assigneeID);
+
+    $editTask = new Task(
+      $taskDB->ownerID,
+      $assignee,
+      $taskDB->title,
+      $taskDB->description,
+      $taskDB->dateTarget,
+      $taskDB->status,
+      $taskDB->id,
+      $taskDB->dateCreate,
+      $taskDB->dateUpdate,
+    );
+
+    return $editTask;
   }
 
   public function delTask(int $taskID): int
