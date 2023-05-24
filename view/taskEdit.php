@@ -15,13 +15,6 @@
 </head>
 <body>
 
-<!--<script>-->
-<!--    const delTask = async (taskID) => {-->
-<!--        const response = await fetch(`/?controller=tasks&delTask=${taskID}`);-->
-<!--        const answer = await response.json();-->
-<!--        document.getElementById(answer.id).remove();-->
-<!--    }-->
-<!--</script>-->
 
 <?php include "menu.php" ?>
 
@@ -31,7 +24,7 @@
       <?= $pageHeader ?>
     </h1>
 
-    <form method="post" class="task-create">
+    <form id="taskEdit" method="post" class="task-create">
         <div class="task-create__line">
             <label class="form-label" for="title">
                 заголовок
@@ -42,6 +35,7 @@
                     name="title"
                     type="text"
                     value="<?= $titleValue ?>"
+                    required
             >
         </div>
         <div class="task-create__line">
@@ -55,6 +49,7 @@
                     name="description"
                     type="text"
                     value="<?= $descriptionValue ?>"
+                    required
             >
         </div>
         <div class="task-create__line">
@@ -67,6 +62,7 @@
                     name="dateTarget"
                     type="date"
                     value="<?= $dateTargetValue ?>"
+                    required
             >
         </div>
         <div class="task-create__line">
@@ -78,12 +74,13 @@
                     id="assigneeID"
                     name="assigneeID"
                     value="<?= $assigneeIDValue ?>"
+                    required
 
             >
               <?php foreach ($users as $key => $assignee): ?>
                   <option
                           value="<?= $assignee->id ?>"
-                          <?= $assignee->id === $assigneeIDValue ? 'selected' : '' ?>>
+                    <?= $assignee->id === $assigneeIDValue ? 'selected' : '' ?>>
                     <?= $assignee->name ?>
                   </option>
               <?php endforeach; ?>
@@ -97,7 +94,8 @@
                     class="base-input"
                     id="status"
                     name="status"
-                    value="<?= $statusValue?>"
+                    value="<?= $statusValue ?>"
+                    required
             >
                 <option value="NEW"
                   <?= "NEW" === $statusValue ? 'selected' : '' ?> >
@@ -130,11 +128,15 @@
 
         <div class="task-create__control">
           <?php if (!$isEdit): ?>
-              <button class="menu-button" type="submit">
+              <button class="menu-button"
+                      type="submit"
+                      id="submit-btn">
                   Создать
               </button>
           <?php else: ?>
-              <button class="menu-button" type="submit">
+              <button class="menu-button"
+                      type="submit"
+                      id="submit-btn">
                   Изменить
               </button>
           <?php endif; ?>
@@ -142,3 +144,15 @@
     </form>
 
 </div>
+
+<script>
+    const form = document.getElementById("taskEdit");
+    const submitBtn = document.getElementById("submit-btn");
+
+    submitBtn.disabled = !form.checkValidity();
+
+    form.addEventListener("input", () => {
+        const isFormValid = form.checkValidity();
+        submitBtn.disabled = !isFormValid;
+    });
+</script>

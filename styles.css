@@ -105,6 +105,11 @@ body {
     border: 1px solid var(--primary-color-active);
 }
 
+.menu-button[disabled] {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 
 .secondary-button {
     display: block;
@@ -283,6 +288,7 @@ body {
     justify-content: space-between;
     align-items: center;
 }
+
 .tasks__item__description {
 
     display: flex;
