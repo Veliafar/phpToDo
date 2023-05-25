@@ -32,20 +32,16 @@
         <a class="menu-button-sqr" href="/?controller=taskEdit">+</a>
     </h1>
 
-    <!--    <form class="tasks__add" method="post">-->
-    <!--        <div></div>-->
-    <!--        <input class="auth-form__input" type="text" name="description" placeholder="описание задачи" required>-->
-    <!--        <button class="menu-button" type="submit">-->
-    <!--            Добавить-->
-    <!--        </button>-->
-    <!--        <div></div>-->
-    <!--    </form>-->
-
-
-    <div id="tasksWrapper" class="tasks">
+    <div id="tasksWrapper" class="tasks <?= count($tasks) ? 'tasks--onload' : '' ?>">
 
       <?php foreach ($tasks as $key => $task): ?>
-          <div class="tasks__item" id="<?= $task->getID() ?>">
+        <?php $taskItemIndex++ ?>
+
+          <div
+
+                  style="animation-delay: calc(<?= $taskAnimationDelay . $taskItemIndex ?>)"
+                  class="tasks__item <?= count($tasks) ? 'tasks-item-onload' : '' ?>"
+                  id="<?= $task->getID() ?>">
               <div class="tasks__item-info tasks__item-info--status-wrapper">
 
                   <!--                  <div class="tasks__item-status -->
@@ -53,20 +49,21 @@
                   <!--                  </div>-->
 
                   <div class="tasks__item__line">
+
                       <div class="tasks__item-cell tasks__item-cell--column tasks__item-cell--column-left">
                           <label class="tasks__item-label">
                               статус
                           </label>
-                          <div class="tasks__item__info">
-                            <?= $task->getStatus() ?>
+                          <div class="tasks__item__info tasks__item__info--status" <?= 'style="background-color:' . $taskStatusesColor[$task->getStatus()] . ';"' ?> >
+                            <?= $taskStatusesTranslate[$task->getStatus()] ?>
                           </div>
                       </div>
 
-                      <div class="tasks__item-cell tasks__item-cell--column">
+                      <div class="tasks__item-cell tasks__item-cell--column <?= $task->isOutdated() ? 'tasks__item-cell--outdated' : '' ?>">
                           <label class="tasks__item-label">
                               дедлайн
                           </label>
-                          <div class="tasks__item__info">
+                          <div class="tasks__item__info tasks__item__info--time">
                             <?= $task->getDateTarget() ?>
                           </div>
                       </div>
@@ -88,7 +85,7 @@
                           <label class="tasks__item-label">
                               заголовок
                           </label>
-                          <div class="tasks__item__info">
+                          <div class="tasks__item__info" title="<?= $task->title ?>">
                             <?= $task->title ?>
                           </div>
 
@@ -96,16 +93,25 @@
                   </div>
 
 
-                  <div class="tasks__item__description">
-                    <?= $task->description ?>
+                  <div
+                          style="animation-delay: calc(<?= $taskAnimationDelay . $taskItemIndex ?>)"
+                          class="tasks__item__description <?= count($tasks) ? ' tasks__item__description--block-onload' : '' ?>">
+                      <p
+                              style="animation-delay: calc(<?= $taskAnimationDelay . $taskItemIndex ?>)"
+                              class="tasks__item__description__text <?= count($tasks) ? ' tasks__item__description--onload' : '' ?>"
+                              title="<?= $task->description ?>">
+                        <?= $task->description ?>
+                      </p>
                   </div>
 
 
               </div>
-              <div class="tasks__item-control">
+              <div
+                      style="animation-delay: calc(<?= $taskAnimationDelay . $taskItemIndex ?>)"
+                      class="tasks__item-control <?= count($tasks) ? ' tasks__item-control--onload' : '' ?>">
 
                   <div class="tasks__item__line">
-                    <div></div>
+                      <div></div>
                       <div class="tasks__item-cell tasks__item-cell--column">
                           <label class="tasks__item-label">
                               дата обновления
@@ -116,27 +122,7 @@
                       </div>
                   </div>
 
-
-
                   <div class="tasks__item-buttons">
-<!--                    --><?php //if (!$task->getIsDone()): ?>
-<!--                        <a-->
-<!--                                title="Выполнить задачу"-->
-<!--                                class="menu-button"-->
-<!--                                href="/?controller=tasks&changeTaskDone=-->
-<!--                                          --><?php //= $key ?><!--&isDone=1">-->
-<!--                            ✔-->
-<!--                        </a>-->
-<!--                    --><?php //else: ?>
-<!--                        <a-->
-<!--                                title="Продолжить задачу"-->
-<!--                                class="menu-button menu-button--danger"-->
-<!--                                href="/?controller=tasks&changeTaskDone=-->
-<!--                                          --><?php //= $key ?><!--&isDone=0">-->
-<!--                            &#8634;-->
-<!--                        </a>-->
-<!--                    --><?php //endif; ?>
-
                     <?php if ($task->getOwnerID() === $userID): ?>
                         <a
                                 title="Редактировать задачу"
@@ -144,13 +130,11 @@
                                 href="/?controller=taskEdit&id=<?= $task->getID() ?>"
                         >
                             &#128393;
+                            <!--                            &#128065;-->
                         </a>
-                    <?php endif; ?>
-
-                    <?php if ($task->getOwnerID() === $userID): ?>
                         <a
                                 title="Удалить задачу"
-                                class="menu-button menu-button--secondary"
+                                class="menu-button menu-button--secondary menu-button--secondary-danger"
                                 onclick="delTask(<?= $task->getID() ?>)"
                         >
                             &#10006;

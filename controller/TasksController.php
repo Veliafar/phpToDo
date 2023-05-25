@@ -24,6 +24,12 @@ $userID = $_SESSION['user']->getID();
 $userProvider = new UserProvider($pdo);
 $taskProvider = new TaskProvider($pdo, $userID, $userProvider);
 
+$taskStatuses = TaskUtils::$taskStatuses;
+$taskStatusesTranslate = TaskUtils::$taskStatusesTranslate;
+$taskStatusesColor = TaskUtils::$taskStatusesColor;
+
+$taskItemIndex = 0;
+$taskAnimationDelay = '0.14s *';
 
 
 //if (isset($_GET['changeTaskDone'])) {

@@ -9,5 +9,4 @@ $pageHeader = 'Добро пожаловать';
 
 include_once "controller/LoginController.php";
 
-
 include "view/index.php";

@@ -97,26 +97,15 @@
                     value="<?= $statusValue ?>"
                     required
             >
-                <option value="NEW"
-                  <?= "NEW" === $statusValue ? 'selected' : '' ?> >
-                    Новая
-                </option>
-                <option value="IN_PROGRESS"
-                  <?= "IN_PROGRESS" === $statusValue ? 'selected' : '' ?> >
-                    В работе
-                </option>
-                <option value="REVIEW"
-                  <?= "REVIEW" === $statusValue ? 'selected' : '' ?> >
-                    Ревью
-                </option>
-                <option value="TEST"
-                  <?= "TEST" === $statusValue ? 'selected' : '' ?> >
-                    Тестирование
-                </option>
-                <option value="RELEASE"
-                  <?= "RELEASE" === $statusValue ? 'selected' : '' ?> >
-                    Релиз
-                </option>
+
+              <?php foreach ($taskStatuses as $key => $status): ?>
+                  <option
+                          value="<?= $status ?>"
+                    <?= $status === $statusValue ? 'selected' : '' ?>>
+                    <?= $taskStatusesTranslate[$status] ?>
+                  </option>
+              <?php endforeach; ?>
+
             </select>
         </div>
 
@@ -152,8 +141,16 @@
 
     submitBtn.disabled = !form.checkValidity();
 
-    form.addEventListener("input", () => {
+    const validListener = function (event) {
         const isFormValid = form.checkValidity();
         submitBtn.disabled = !isFormValid;
-    });
+    };
+    form.addEventListener("input", validListener);
+
+
+    const exitListener = function (event) {
+        form.removeEventListener("input", validListener)
+        window.removeEventListener("beforeunload", exitListener)
+    };
+    window.addEventListener("beforeunload", exitListener);
 </script>

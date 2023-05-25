@@ -18,7 +18,8 @@ if (isset($_POST['username'], $_POST['password'], $_POST['name'])) {
   $user->setName($name);
 
   try {
-    $user->setID($userProvider->registerUser($user, $userPass));
+    $userProvider->registerUser($user, $userPass);
+    $user->setID($userProvider->getUserByNameAndPass($userName, $userPass)->getID());
     $_SESSION['user'] = $user;
     header("Location: index.php");
     die();

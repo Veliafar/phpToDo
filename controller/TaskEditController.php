@@ -32,6 +32,11 @@ $dateTargetValue = "";
 $assigneeIDValue = "";
 $statusValue = "";
 
+$taskStatuses = array_filter(TaskUtils::$taskStatuses, function ($v, $k) {
+  return $v !== TaskUtils::$taskStatuses['DONE'];
+}, ARRAY_FILTER_USE_BOTH);
+$taskStatusesTranslate = TaskUtils::$taskStatusesTranslate;
+
 if (isset($_GET['id'])) {
   $pageHeader = 'Редактирование задачи';
   $pageTitle = $pageHeader . " | " . $commonPageTitle;
@@ -44,6 +49,8 @@ if (isset($_GET['id'])) {
   $statusValue = $editTask->getStatus();
 
   $isEdit = true;
+
+  $taskStatuses = TaskUtils::$taskStatuses;
 }
 
 if (isset($_POST['createTask'])) {
@@ -63,7 +70,7 @@ if (isset($_POST['createTask'])) {
 if (isset($_POST['editTask'])) {
   $taskProvider->editTask(
     $editTask->getID(),
-    $editTask->getOwnerID(),
+    $userID,
     $_POST['assigneeID'],
     $_POST['title'],
     $_POST['description'],

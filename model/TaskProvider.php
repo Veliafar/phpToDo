@@ -45,6 +45,9 @@ class TaskProvider
       );
 
       $this->tasks[] = $taskFromBack;
+      uasort($this->tasks, function ($a, $b) {
+        return strtotime($a->getDateTarget()) <=> strtotime($b->getDateTarget());
+      });
     }
     if (!count($tasksFromDB)) {
       $this->tasks = [];
@@ -113,6 +116,8 @@ class TaskProvider
   {
 
     $assignee = $this->userProvider->getUserByID($assigneeID);
+
+
 
     $newTask = new Task(
       $ownerID,

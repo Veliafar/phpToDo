@@ -109,10 +109,15 @@ body {
 }
 
 .menu-button[disabled] {
-    opacity: 0.5;
-    pointer-events: none;
+    background-color: lightgray;
+    border: 1px solid lightgray;
+    cursor: not-allowed;
 }
 
+.menu-button[disabled]:active {
+    background-color: var(--danger-color-active);
+    border: 1px solid var(--danger-color-active);
+}
 
 .secondary-button {
     display: block;
@@ -155,11 +160,23 @@ body {
 .menu-button--secondary:hover {
     background-color: var(--color-lvl-2--hover);
     border: none;
+    color: var(--primary-color-hover);
 }
 
 .menu-button--secondary:active {
     background-color: var(--color-lvl-2--active);
     border: none;
+    color: var(--primary-color-active);
+}
+
+.menu-button--secondary-danger:hover {
+    background-color: var(--danger-color-hover);
+    color: var(--color-lvl-2);
+}
+
+.menu-button--secondary-danger:active {
+    background-color: var(--danger-color-active);
+    color: var(--color-lvl-2);
 }
 
 .user-panel {
@@ -278,8 +295,22 @@ body {
     align-items: center;
     flex-wrap: wrap;
     gap: 12px;
-
 }
+
+.tasks__item {
+    width: 0;
+    height: 0;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: var(--color-lvl-2);
+    opacity: 0;
+}
+
+
+
+
 
 .tasks__add {
     margin-top: 24px;
@@ -290,37 +321,38 @@ body {
     gap: 12px;
 }
 
-.tasks__item {
-    width: 320px;
-    height: 320px;
-    border-radius: 8px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    box-shadow: var(--box-shadow);
-    background-color: var(--color-lvl-2);
-}
-
 .tasks__item__line {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding:  0 12px;
+    padding: 0 12px;
 }
+
 .tasks__item__line:not(:first-child) {
     margin-top: 12px;
 }
 
 .tasks__item__description {
-    height: 100%;
-    padding: 12px 0;
+    height: 0;
+    padding: 12px;
     display: flex;
     justify-content: center;
     align-items: center;
     border-top: 1px solid lightgray;
     border-bottom: 1px solid lightgray;
     box-sizing: border-box;
+
+}
+
+.tasks__item__description__text {
+    max-height: 80px;
+    overflow: hidden;
+    display: flex;
+    font-size: 12px;
+    letter-spacing: 1.2px;
+    line-height: 21px;
+    padding: 12px 0;
+    opacity: 0;
 }
 
 .tasks__item--header {
@@ -338,6 +370,7 @@ body {
 
 .tasks__item-control {
     padding: 12px 0;
+    opacity: 0;
 }
 
 .tasks__item-info--status-wrapper {
@@ -368,6 +401,15 @@ body {
     overflow-wrap: anywhere;
     gap: 8px;
 
+}
+
+.tasks__item-cell--outdated {
+    background-color: #9C264611;
+}
+
+.tasks__item-cell--outdated .tasks__item__info {
+    color: darkred;
+    font-weight: bold;
 }
 
 .tasks__item-cell--column {
@@ -403,13 +445,23 @@ body {
     display: inline-block;
 }
 
+.tasks__item__info--status {
+    font-weight: bold;
+    color: var(--color-lvl-2);
+    padding: 8px 2px 0 8px;
+    line-height: 16px;
+}
+.tasks__item__info--time {
+    padding: 8px 0 0 2px;
+    line-height: 16px;
+}
 
 .tasks__item-buttons {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 8px;
-    padding:  0 12px;
+    padding: 0 12px;
 }
 
 .task-create {
@@ -485,3 +537,57 @@ body {
         grid-template-columns: 120px auto;
     }
 }
+
+.tasks--onload {
+}
+
+@keyframes tasksPosition {
+    0% {
+        box-shadow: none;
+    }
+    100% {
+        box-shadow: var(--box-shadow);
+        width: 320px;
+        height: 320px;
+        opacity: 1;
+    }
+}
+
+@keyframes tasksControl {
+    0% {
+        opacity: 0;
+    }
+    45% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes descriptionHeight {
+    0% {
+        height: 0;
+    }
+    45% {
+        height: 40px;
+    }
+    100% {
+        height: 80px;
+        max-height: 80px;
+    }
+}
+
+
+.tasks-item-onload {
+    animation: tasksPosition 1.8s forwards;
+}
+.tasks__item-control--onload {
+    animation: tasksControl 1.8s forwards;
+}
+.tasks__item__description--onload {
+    animation: tasksControl 1.8s forwards;
+}
+.tasks__item__description--block-onload {
+    animation: descriptionHeight 1.8s forwards;
+}
+

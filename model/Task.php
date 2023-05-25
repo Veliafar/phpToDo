@@ -1,6 +1,34 @@
 <?php
 require_once "User.php";
 
+class TaskUtils
+{
+  static array $taskStatuses = array(
+    "NEW" => "NEW",
+    "IN_PROGRESS" => "IN_PROGRESS",
+    "REVIEW" => "REVIEW",
+    "TEST" => "TEST",
+    "RELEASE" => "RELEASE",
+    "DONE" => "DONE",
+  );
+  static array $taskStatusesTranslate = array(
+    "NEW" => "Новая",
+    "IN_PROGRESS" => "В работе",
+    "REVIEW" => "Ревью",
+    "TEST" => "Тест",
+    "RELEASE" => "Релиз",
+    "DONE" => "Завершена",
+  );
+  static array $taskStatusesColor = array(
+    "NEW" => "#3399BF",
+    "IN_PROGRESS" => "#76C63D",
+    "REVIEW" => "#D54525",
+    "TEST" => "orange",
+    "RELEASE" => "#F5B202",
+    "DONE" => "darkgray",
+  );
+}
+
 class Task
 {
   private int $id;
@@ -22,7 +50,7 @@ class Task
 
   public function __construct(
     int    $ownerID,
-    User    $assignee,
+    User   $assignee,
     string $title,
     string $description,
     string $dateTarget,
@@ -79,6 +107,7 @@ class Task
   {
     return $this->dateTarget->format('d.m.Y');
   }
+
   public function getDateTargetForHTMLValue(): string
   {
     return $this->dateTarget->format('Y-m-d');
@@ -93,6 +122,7 @@ class Task
   {
     return $this->dateCreate->format('d.m.Y H:i');
   }
+
   public function getDateCreateForDB(): string
   {
     return $this->dateTarget->format('d.m.Y H:m');
@@ -103,4 +133,8 @@ class Task
     return $this->dateUpdate->format('d.m.Y H:m');
   }
 
+  public function isOutdated(): bool
+  {
+    return strtotime($this->dateTarget->format('d.m.Y')) <= time();
+  }
 }
