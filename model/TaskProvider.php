@@ -18,15 +18,13 @@ class TaskProvider
     $this->userID = $userID;
     $this->userProvider = $userProvider;
 
-    $statement = $this->pdo->prepare(
-      'SELECT * FROM tasks WHERE ownerID = :ownerID'
-    );
 
-    $statement->execute([
-      'ownerID' => $userID,
-    ]);
+  }
 
+  private function prepareTasks($statement): void {
     $tasksFromDB = $statement->fetchAll(PDO::FETCH_OBJ);
+
+    $this->tasks = [];
 
     foreach ($tasksFromDB as $taskDB) {
 
@@ -118,7 +116,6 @@ class TaskProvider
     $assignee = $this->userProvider->getUserByID($assigneeID);
 
 
-
     $newTask = new Task(
       $ownerID,
       $assignee,
@@ -194,28 +191,38 @@ class TaskProvider
     return $taskID;
   }
 
-//  public function changeTaskDone(int $taskKey, int $isDone): int
-//  {
-//    $taskID = $this->tasks[$taskKey]->getID();
-//    $userID = $this->tasks[$taskKey]->getUserID();
-//
-//    $statement = $this->pdo->prepare(
-//      'UPDATE tasks SET isDone=:isDone WHERE id = :id AND userID = :userID'
-//    );
-//    $statement->execute([
-//      'isDone' => $isDone,
-//      'id' => $taskID,
-//      'userID' => $userID
-//    ]);
-//    $makeDoneKey = null;
-//    foreach ($this->tasks as $key => $value) {
-//      if ($value->getUserID() === $userID && $value->getID() === $taskID) {
-//        $makeDoneKey = $key;
-//      }
-//    }
-//    $this->tasks[$makeDoneKey]->changeTaskReady($isDone);
-//
-//    return $taskID;
-//  }
+//  string $text,
+//    string $status,
+//    string $dateTarget,
+//    int    $assigneeID,
+
+  public function filterTask(
+    int    $ownerID,
+    string $text,
+    string $status,
+
+  ): array
+  {
+    $statement = $this->pdo->prepare(
+      'SELECT * FROM tasks WHERE ownerID = :ownerID'
+    );
+    $statement->execute([
+      'ownerID' => $ownerID
+    ]);
+
+    $this->prepareTasks($statement);
+
+    return $this->tasks;
+  }
+
+  public  function  getAllTasks($userID): void {
+    $statement = $this->pdo->prepare(
+      'SELECT * FROM tasks WHERE ownerID = :ownerID'
+    );
+    $statement->execute([
+      'ownerID' => $userID,
+    ]);
+    $this->prepareTasks($statement);
+  }
 
 }
