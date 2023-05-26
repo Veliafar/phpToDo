@@ -97,8 +97,22 @@ if (isset($_GET['refresh'])) {
     $preparedTasks[] = $obj;
   }
 
+  $preparedUsers = [];
+  $usersForFront = $userProvider->getUsersList();
+
+  foreach ($usersForFront as &$value) {
+    $objUser = new stdClass();
+
+    $objUser->id = $value->id;
+    $objUser->name = $value->name;
+    $objUser->userName = $value->username;
+
+    $preparedUsers[] = $objUser;
+  }
+
   $response = [
     'tasks' => $preparedTasks,
+    'users' => $preparedUsers
   ];
 
   header('Content-Type: application/json; charset=utf-8');

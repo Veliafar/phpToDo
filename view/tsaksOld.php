@@ -1,6 +1,6 @@
 <?php if (count($tasks)): ?>
 
-  <div class="tasks-filter">
+  <div id="tasksFilter" class="tasks-filter">
     <div class="tasks-filter__block">
       <label class="tasks-filter__block__label" for="taskText">
         текст
@@ -88,8 +88,6 @@
       >
     </div>
 
-    <!--          <input type="hidden" value="true" name="filterTasks">-->
-
     <div class="tasks-filter__block tasks-filter__block--control">
       <button
         onclick="filterTasks();"
@@ -104,7 +102,7 @@
   </div>
 <?php endif; ?>
 
-<div id="tasksWrapper" class="tasks <?= count($tasks) ? 'tasks--onload' : '' ?>">
+<div id="tasksWrapper" class="tasks">
   <?php foreach ($tasks as $key => $task): ?>
     <?php $taskItemIndex++ ?>
     <div

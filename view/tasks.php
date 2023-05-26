@@ -67,52 +67,253 @@
             const day = this.dateTarget.toString().slice(0, 2);
             const month = this.dateTarget.toString().slice(3, 5);
             const year = this.dateTarget.toString().slice(6, 10);
-            return new Date(+year, +month-1, +day).getTime() <= new Date().getTime();
+            return new Date(+year, +month - 1, +day).getTime() <= new Date().getTime();
         }
     }
 
+    const taskTextValue = '';
+    const statusValue = '';
+    const assigneeIDValue = '';
+    const dateTargetValue = '';
+
     let tasks = [];
+    let tasksCache = [];
     const taskAnimationDelay = 0.14;
+    let users = [];
+
+    const clearFilter = async () => {
+        document.getElementById('taskText').value = '';
+        document.getElementById('status').value = '';
+        document.getElementById('assigneeID').value = '';
+        document.getElementById('dateTarget').value = '';
+
+        tasks = [];
+        const backTasks = JSON.parse(JSON.stringify(tasksCache));
+        console.log('backTasks', backTasks)
+        for (const backTask of backTasks) {
+            tasks.push(new Task(backTask))
+        }
+        document.getElementById('tasksWrapper').innerHTML = "";
+        setTasksList(tasks);
+    }
 
 
     const filterTasks = async () => {
-        const taskText = document.getElementById('taskText').value;
-        const status = document.getElementById('status').value;
-        const assigneeID = document.getElementById('assigneeID').value;
-        const dateTarget = document.getElementById('dateTarget').value;
+        let taskText = document.getElementById('taskText').value;
+        let status = document.getElementById('status').value;
+        let assigneeID = document.getElementById('assigneeID').value;
+        let dateTarget = document.getElementById('dateTarget').value;
 
-        // const response = await fetch(`/?controller=tasks&filterTasks=true&taskText=${taskText}&status=${status}&assigneeID=${assigneeID}&dateTarget=${dateTarget}`);
-        //
-        // if (response) {
-        // }
+        tasks = [];
+        const backTasks = JSON.parse(JSON.stringify(tasksCache));
+        console.log('backTasks', backTasks)
+        for (const backTask of backTasks) {
+            tasks.push(new Task(backTask))
+        }
+
+        if (taskText && taskText?.length && taskText != '') {
+            console.log('TEXT')
+            tasks = tasks.filter((el) => el.title.includes(taskText) || el.description.includes(taskText));
+        }
+        if (Object.values(TaskUtils.taskStatuses).includes(status)) {
+            console.log('STATUS')
+            tasks = tasks.filter((el) => el.status === status);
+        }
+        if (users.find(el => +el.id === +assigneeID)) {
+            console.log('USER')
+            console.log(+assigneeID)
+            tasks = tasks.filter((el) => +el.assigneeID === +assigneeID);
+        }
+        if (dateTarget) {
+            console.log('DATE')
+            const year = dateTarget.slice(0, 4);
+            const month = dateTarget.slice(5, 7);
+            const day = dateTarget.slice(8, 10);
+            const searched = `${day}.${month}.${year}`;
+            tasks = tasks.filter((el) => el.dateTarget === searched);
+        }
+
+        console.log('tasks', tasks)
+
+        document.getElementById('tasksWrapper').innerHTML = "";
+        setTasksList(tasks);
+
     }
 
     const getTasksOnRefresh = async () => {
         const response = await fetch(`/?controller=tasks&refresh=true`);
 
-        if (response) {
-            const reqTasks = await response.json();
+        if (!response) {
+            return;
+        }
+        const reqTasks = await response.json();
 
-            const tasks = [];
-            console.log('reqTasks', reqTasks);
+        const tasks = [];
+        console.log('reqTasks', reqTasks);
 
-            const backTasks = reqTasks?.['tasks']?.length
-                ? JSON.parse(JSON.stringify(reqTasks?.['tasks']))
-                : [];
+        users = reqTasks?.['users']?.length
+            ? JSON.parse(JSON.stringify(reqTasks?.['users']))
+            : [];
 
-            for (const backTask of backTasks) {
-                tasks.push(new Task(backTask))
+        const backTasks = reqTasks?.['tasks']?.length
+            ? JSON.parse(JSON.stringify(reqTasks?.['tasks']))
+            : [];
+        for (const backTask of backTasks) {
+            tasks.push(new Task(backTask))
+        }
+
+        if (!tasks.length) {
+            return;
+        }
+
+        tasksCache = JSON.parse(JSON.stringify(tasks));
+
+        const tasksFilter = document.createElement('div');
+        tasksFilter.id = 'tasksFilter';
+        tasksFilter.classList.add('tasks-filter');
+        tasksFilter.innerHTML = `
+            <div class="tasks-filter__block">
+      <label class="tasks-filter__block__label" for="taskText">
+        текст
+      </label>
+      <input
+        class="base-input filter-input"
+        id="taskText"
+        name="taskText"
+        type="text"
+        value="${taskTextValue}"
+
+
+      >
+    </div>
+
+
+    <div class="tasks-filter__block">
+      <label class="tasks-filter__block__label" for="status">
+        статус
+      </label>
+      <select
+        class="base-input filter-input"
+        id="status"
+        name="status"
+        value="${statusValue}"
+
+
+      >
+        <option
+          value="''"
+          ${statusValue === '' ? 'selected' : ''}
+          >
+        </option>
+
+        ${(function taskStatusOptions() {
+            let options = '';
+
+            for (const status of Object.values(TaskUtils.taskStatuses)) {
+                options += `
+                        <option
+                            value="${status}"
+                            ${status === statusValue ? 'selected' : ''}>
+                            ${TaskUtils.taskStatusesTranslate[status]}
+                      </option>
+                    `
             }
+            return options;
+        })()}
+      </select>
+    </div>
 
-            const tasksList = document.getElementById('tasksWrapper');
+    <div class="tasks-filter__block">
+      <label class="tasks-filter__block__label" for="status">
+        исполнитель
+      </label>
+      <select
+        class="base-input filter-input"
+        id="assigneeID"
+        name="assigneeID"
+        value="${assigneeIDValue}"
 
-            for (const [index, task] of tasks.entries()) {
-                const taskItem = document.createElement('div');
-                taskItem.style.animationDelay = `${(index * taskAnimationDelay).toString()}s`
-                taskItem.classList.add('tasks__item');
-                taskItem.classList.add('tasks-item-onload');
-                taskItem.id = task.id.toString();
-                taskItem.innerHTML = `
+
+      >
+        <option
+          value="''"
+          ${assigneeIDValue === '' ? 'selected' : ''}
+          >
+        </option>
+        ${(function assigneeIDOptions() {
+            let options = '';
+
+            for (const user of users) {
+                options += `
+                        <option
+                            value="${user.id}"
+                            ${user.id === statusValue ? 'selected' : ''}>
+                            ${user.name}
+                      </option>
+                    `
+            }
+            return options;
+        })()}
+      </select>
+    </div>
+
+
+    <div class="tasks-filter__block">
+      <label class="tasks-filter__block__label" for="taskText">
+        дедлайн
+      </label>
+      <input
+        class="base-input filter-input"
+        id="dateTarget"
+        name="dateTarget"
+        type="date"
+        value="${dateTargetValue}"
+
+      >
+    </div>
+
+    <div class="tasks-filter__block tasks-filter__block--control">
+      <button
+        onclick="filterTasks()"
+        title="Фильтр"
+        class="menu-button menu-button--search menu-button--secondary"
+
+      >
+        &#128269;
+
+      </button>
+
+    </div>
+    <div class="tasks-filter__block tasks-filter__block--control">
+      <button
+        onclick="clearFilter()"
+        title="Сбросить поиск"
+        class="menu-button menu-button--search menu-button--secondary"
+
+      >
+        &#10006;
+      </button>
+    </div>
+
+
+            `
+        const wrapper = document.getElementById('filterWrap');
+        wrapper.appendChild(tasksFilter);
+
+        setTasksList(tasks);
+    }
+
+    function setTasksList(tasks) {
+        const tasksList = document.getElementById('tasksWrapper');
+
+
+        for (const [index, task] of tasks.entries()) {
+            const taskItem = document.createElement('div');
+            taskItem.style.animationDelay = `${(index * taskAnimationDelay).toString()}s`
+            taskItem.classList.add('tasks__item');
+            taskItem.classList.add('tasks-item-onload');
+            taskItem.id = task.id.toString();
+            taskItem.innerHTML = `
       <div class="tasks__item-info tasks__item-info--status-wrapper">
         <div class="tasks__item__line">
 
@@ -203,10 +404,10 @@
         </div>
       </div>
                 `;
-                tasksList.appendChild(taskItem);
-            }
-
+            tasksList.appendChild(taskItem);
         }
+
+
     }
 
     const delTask = async (taskID) => {
@@ -224,11 +425,15 @@
 
 <?php include "menu.php" ?>
 
-<div class="wrapper">
+<div id="wrapper" class="wrapper">
     <h1 class="page-header-tasks">
       <?= $pageHeader ?>
         <a class="menu-button-sqr" href="/?controller=taskEdit">+</a>
     </h1>
+
+    <div id="filterWrap">
+
+    </div>
 
     <div id="tasksWrapper" class="tasks">
 
