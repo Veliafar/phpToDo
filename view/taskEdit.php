@@ -62,6 +62,7 @@
                     name="dateTarget"
                     type="date"
                     value="<?= $dateTargetValue ?>"
+                    min="<?php echo date('Y-m-d', strtotime('+1 days')); ?>"
                     required
             >
         </div>
