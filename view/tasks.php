@@ -275,12 +275,12 @@
     <div class="tasks-filter__block tasks-filter__block--control">
       <button
         onclick="filterTasks()"
-        title="Фильтр"
-        class="menu-button menu-button--search menu-button--secondary"
+        title="Поиск"
+        class="menu-button menu-button--search"
 
       >
-        &#128269;
-
+        <div class="magnifier">
+        </div>
       </button>
 
     </div>

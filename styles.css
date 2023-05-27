@@ -625,5 +625,27 @@ body {
     animation: descriptionHeight 1.8s forwards;
 }
 
+.magnifier {
+    min-width: 14px;
+    min-height: 14px;
+    background-color: transparent;
+    border: 2px solid var(--color-lvl-2);
+    border-radius: 50%;
+    position: relative;
+}
+
+.magnifier::after {
+    position: absolute;
+    content: '';
+    bottom: -8px;
+    right: -3px;
+
+
+    width: 2px;
+    height: 10px;
+    background-color: var(--color-lvl-2);
+    rotate: 135deg;
+}
+
 
 
